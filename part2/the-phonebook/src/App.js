@@ -43,23 +43,27 @@ const App = () => {
 					persons.map((person) => (person.id === id ? returnedPerson : person))
 				);
 				setMessage(`Updated ${newName}`);
-				setTimeout(() => setMessage(null), 3000);
+				setTimeout(() => setMessage(null), 5000);
 			})
 			.catch((error) => {
-				setMessage(
-					`Information of ${newName} has already been removed from server`
-				);
-				setTimeout(() => setMessage(null), 3000);
+				setMessage(error.response.data.error);
+				setTimeout(() => setMessage(null), 5000);
 			});
 	};
 
 	const createPerson = () => {
 		let changedObject = { name: newName, number: newNumber };
-		personService.create(changedObject).then((returnedPersons) => {
-			setPersons(persons.concat(returnedPersons));
-			setMessage(`Added ${newName}`);
-			setTimeout(() => setMessage(null), 3000);
-		});
+		personService
+			.create(changedObject)
+			.then((returnedPersons) => {
+				setPersons(persons.concat(returnedPersons));
+				setMessage(`Added ${newName}`);
+				setTimeout(() => setMessage(null), 5000);
+		})
+			.catch(error => {
+				setMessage(error.response.data.error)
+				setTimeout(() => setMessage(null), 5000);
+			})
 	};
 
 	const handleSubmit = (event) => {
@@ -79,7 +83,7 @@ const App = () => {
 	};
 
 	const handleDelete = (event, id, name) => {
-		if (parseInt(event.target.id) === id) {
+		if (event.target.id === id) {
 			const changedPerson = persons.filter((person) => id !== person.id);
 			const confirmDeletion = window.confirm(`Delete ${name} ?`);
 
@@ -88,11 +92,11 @@ const App = () => {
 					setMessage(
 						`Information of ${name} has already been removed from server`
 					);
-					setTimeout(() => setMessage(null), 3000);
+					setTimeout(() => setMessage(null), 5000);
 				});
 				setPersons(changedPerson);
 				setMessage(`Deleted ${name}`);
-				setTimeout(() => setMessage(null), 3000);
+				setTimeout(() => setMessage(null), 5000);
 			}
 		}
 	};
