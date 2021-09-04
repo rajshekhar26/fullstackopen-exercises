@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA,SACC,WAAY,CACZ,kBAAqB,CACrB,cAAe,CACf,kBAAmB,CACnB,iBAAkB,CAClB,YAAa,CACb,kBACD","file":"main.ef41947e.chunk.css","sourcesContent":[".message {\n\tcolor: green;\n\tbackground: lightgrey;\n\tfont-size: 20px;\n\tborder-style: solid;\n\tborder-radius: 5px;\n\tpadding: 10px;\n\tmargin-bottom: 10px;\n}\n"]}
