@@ -64,21 +64,49 @@ const App = () => {
   }
 
   const handleRemoveBlog = async id => {
-    const blog = blogs.find(blog => blog.id === id)
+    const blogToDelete = blogs.find(blog => blog.id === id)
 
-    const confirmRemoval = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    const confirmRemoval = window.confirm(
+      `Remove blog ${blogToDelete.title} by ${blogToDelete.author}`
+    )
 
     if (confirmRemoval) {
       try {
         await blogService.remove(id)
         setBlogs(blogs.filter(blog => blog.id !== id))
-        notifyWith(`${blog.title} by ${blog.author} was removed`)
+        notifyWith(
+          `${blogToDelete.title} by ${blogToDelete.author} was removed`
+        )
       } catch (err) {
         console.log(err)
         notifyWith('blog was not removed', 'error')
       }
     }
   }
+
+  const handleUpdateBlog = async id => {
+    const blogToUpdate = blogs.find(blog => blog.id === id)
+
+    const blog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      user: blogToUpdate.user.id,
+      likes: blogToUpdate.likes += 1,
+    }
+
+    try {
+      const updatedBlog = await blogService.update(id, blog)
+      notifyWith(
+        `${updatedBlog.title} by ${updatedBlog.author} was updated`
+      )
+    } catch (err) {
+      console.log(err)
+      notifyWith('blog was not removed', 'error')
+    }
+  }
+
+  const sortedBlog = blogs.sort((a, b) => b.likes - a.likes)
 
   if (user === null) {
     return (
@@ -104,12 +132,13 @@ const App = () => {
       <Togglable buttonLabel='create new blog'>
         <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
-      {blogs.map(blog =>
+      {sortedBlog.map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
           user={user}
           handleRemoveBlog={handleRemoveBlog}
+          handleUpdateBlog={handleUpdateBlog}
         />
       )}
     </div>
