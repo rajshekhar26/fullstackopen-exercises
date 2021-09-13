@@ -52,7 +52,7 @@ const App = () => {
     window.localStorage.removeItem('blogAppUser')
   }
 
-  const createBlog = async (blogObject) => {
+  const handleCreateBlog = async blogObject => {
     try {
       const blog = await blogService.create(blogObject)
       setBlogs(blogs.concat(blog))
@@ -60,6 +60,23 @@ const App = () => {
     } catch (err) {
       console.log(err)
       notifyWith('blog was not created', 'error')
+    }
+  }
+
+  const handleRemoveBlog = async id => {
+    const blog = blogs.find(blog => blog.id === id)
+
+    const confirmRemoval = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+
+    if (confirmRemoval) {
+      try {
+        await blogService.remove(id)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        notifyWith(`${blog.title} by ${blog.author} was removed`)
+      } catch (err) {
+        console.log(err)
+        notifyWith('blog was not removed', 'error')
+      }
     }
   }
 
@@ -85,10 +102,15 @@ const App = () => {
       </p>
 
       <Togglable buttonLabel='create new blog'>
-        <BlogForm createBlog={createBlog} />
+        <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={user}
+          handleRemoveBlog={handleRemoveBlog}
+        />
       )}
     </div>
   )
