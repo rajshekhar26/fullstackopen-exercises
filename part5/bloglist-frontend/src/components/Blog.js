@@ -17,6 +17,7 @@ const Blog = ({ blog, user, handleRemoveBlog, handleUpdateBlog }) => {
       <div>
         {blog.title} {blog.author}
         <button
+          className='btn-details'
           onClick={() => setShowDetails(!showDetails)}
         >
           {showDetails ? 'hide' : 'view'}
@@ -29,6 +30,7 @@ const Blog = ({ blog, user, handleRemoveBlog, handleUpdateBlog }) => {
             <div>
               likes {blog.likes}
               <button
+                className='btn-like'
                 onClick={() => handleUpdateBlog(blog.id)}
               >
                 like
