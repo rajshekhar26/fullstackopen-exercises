@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [notification, setNotification] = useState(null)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -29,6 +32,11 @@ const App = () => {
     }
   }, [])
 
+  const notifyWith = (message, type = 'success') => {
+    setNotification({ message, type })
+    setTimeout(() => setNotification(null), 5000)
+  }
+
   const handleLogin = async event => {
     event.preventDefault()
     try {
@@ -36,8 +44,10 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
       window.localStorage.setItem('blogAppUser', JSON.stringify(user))
+      notifyWith(`${user.name} logged in`)
     } catch (err) {
       console.log(err)
+      notifyWith('wrong username or password', 'error')
     }
     setUsername('')
     setPassword('')
@@ -53,8 +63,10 @@ const App = () => {
     try {
       const blog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(blog))
+      notifyWith(`a new blog ${blog.title} by ${blog.author} was added`)
     } catch (err) {
       console.log(err)
+      notifyWith('blog was not created', 'error')
     }
   }
 
@@ -62,6 +74,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification notifcation={notification} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -90,6 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification notifcation={notification} />
       <p>
         {user.name} logged in
         <button onClick={handleLogout}>log out</button>
