@@ -13,7 +13,7 @@ const Blog = ({ blog, user, handleRemoveBlog, handleUpdateBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blogs'>
       <div>
         {blog.title} {blog.author}
         <button
@@ -40,6 +40,7 @@ const Blog = ({ blog, user, handleRemoveBlog, handleUpdateBlog }) => {
             {
               blog.user.username === user.username &&
               <button
+                className='btn-delete-blog'
                 onClick={() => handleRemoveBlog(blog.id)}
               >remove
               </button>

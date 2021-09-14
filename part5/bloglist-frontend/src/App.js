@@ -42,7 +42,7 @@ const App = () => {
       window.localStorage.setItem('blogAppUser', JSON.stringify(user))
       notifyWith(`${user.name} logged in`)
     } catch (err) {
-      console.log(err)
+      console.log(err.response)
       notifyWith('wrong username or password', 'error')
     }
   }
@@ -126,7 +126,11 @@ const App = () => {
       <Notification notifcation={notification} />
       <p>
         {user.name} logged in
-        <button onClick={handleLogout}>log out</button>
+        <button
+          className='btn-logout'
+          onClick={handleLogout}
+        >log out
+        </button>
       </p>
 
       <Togglable buttonLabel='create new blog'>
