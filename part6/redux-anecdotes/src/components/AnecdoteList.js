@@ -9,9 +9,8 @@ const AnecdoteList = () => {
   const dispatch = useDispatch()
 
   const handleVote = anecdote => {
-    dispatch(setVotes(anecdote.id))
-    dispatch(setNotification(`you voted ${anecdote.content}`))
-    setTimeout(() => dispatch(setNotification(null)), 5000)
+    dispatch(setVotes(anecdote))
+    dispatch(setNotification(`you voted ${anecdote.content}`, 5))
   }
 
   const sortedAnecdotes = anecdotes.sort((a, b) => b.votes - a.votes)
