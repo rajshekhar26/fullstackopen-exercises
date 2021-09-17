@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Link, Route, Switch } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Switch,
+  useHistory,
+  useRouteMatch,
+} from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -20,16 +26,35 @@ const Menu = () => {
   );
 };
 
+const AnecdoteItem = ({ anecdote }) => (
+  <div>
+    <h2>
+      {anecdote.content} by {anecdote.author}
+    </h2>
+    <p>has {anecdote.votes} votes</p>
+    <p>
+      for more info see <a href={anecdote.info}>{anecdote.info}</a>
+    </p>
+  </div>
+);
+
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
       ))}
     </ul>
   </div>
 );
+
+const Notification = ({ notification }) => {
+  if (!notification) return null;
+  return <div>{notification}</div>;
+};
 
 const About = () => (
   <div>
@@ -72,6 +97,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
 
+  const history = useHistory();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
@@ -80,6 +107,11 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+
+    setContent("");
+    setAuthor("");
+    setInfo("");
+    history.push("/");
   };
 
   return (
@@ -134,34 +166,45 @@ const App = () => {
     },
   ]);
 
-  const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState(null);
+
+  const match = useRouteMatch("/anecdotes/:id");
+
+  const anecdote = match
+    ? anecdotes.find((a) => a.id === match.params.id)
+    : null;
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`A new anecdote ${anecdote.content} created!`);
+    setTimeout(() => setNotification(null), 10000);
   };
 
-  const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
+  // const vote = (id) => {
+  //   const anecdote = anecdoteById(id);
 
-  const vote = (id) => {
-    const anecdote = anecdoteById(id);
+  //   const voted = {
+  //     ...anecdote,
+  //     votes: anecdote.votes + 1,
+  //   };
 
-    const voted = {
-      ...anecdote,
-      votes: anecdote.votes + 1,
-    };
-
-    setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
-  };
+  //   setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
+  // };
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <Notification notification={notification} />
 
       <Switch>
         <Route path="/" exact>
           <AnecdoteList anecdotes={anecdotes} />
+        </Route>
+
+        <Route path="/anecdotes/:id">
+          <AnecdoteItem anecdote={anecdote} />
         </Route>
 
         <Route path="/about">
