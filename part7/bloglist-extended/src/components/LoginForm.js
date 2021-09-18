@@ -1,27 +1,32 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
-import { setUser } from "../reducers/userReducer";
+import { setUser } from '../reducers/userReducer'
+import { Button } from '../GlobalStyle'
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(setUser({ username, password }));
-    setUsername("");
-    setPassword("");
-  };
+    event.preventDefault()
+    dispatch(setUser({ username, password }))
+    history.push('/')
+    setUsername('')
+    setPassword('')
+  }
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
         username
         <input
-          type="text"
-          id="username"
+          type='text'
+          id='username'
           value={username}
           onChange={({ target }) => setUsername(target.value)}
         />
@@ -30,18 +35,18 @@ const LoginForm = () => {
       <div>
         password
         <input
-          type="password"
-          id="password"
+          type='password'
+          id='password'
           value={password}
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
 
-      <button className="btn-login" type="submit">
+      <Button primary className='btn-login' type='submit'>
         log in
-      </button>
+      </Button>
     </form>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

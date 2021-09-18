@@ -1,32 +1,34 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { createBlog } from "../reducers/blogsReducer";
+import { createBlog } from '../reducers/blogsReducer'
+import { Button } from '../GlobalStyle'
+import styled from 'styled-components'
 
 const BlogForm = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    dispatch(createBlog({ title, author, url }));
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  };
+    event.preventDefault()
+    dispatch(createBlog({ title, author, url }))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
 
   return (
     <div>
-      <h2>create new</h2>
+      <Heading>Create New</Heading>
       <form onSubmit={handleSubmit}>
         <div>
           title:
           <input
-            type="text"
-            id="title"
+            type='text'
+            id='title'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
@@ -34,8 +36,8 @@ const BlogForm = () => {
         <div>
           author:
           <input
-            type="text"
-            id="author"
+            type='text'
+            id='author'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
@@ -43,18 +45,22 @@ const BlogForm = () => {
         <div>
           url:
           <input
-            type="text"
-            id="url"
+            type='text'
+            id='url'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button className="btn-create-blog" type="submit">
+        <Button primary className='btn-create-blog' type='submit'>
           create
-        </button>
+        </Button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default BlogForm;
+const Heading = styled.h2`
+  margin-bottom: 1em;
+`
+
+export default BlogForm

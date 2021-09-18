@@ -1,55 +1,74 @@
-import loginService from "../services/login";
-import blogService from "../services/blogs";
-import { setNotification } from "./notificationReducer";
+import loginService from '../services/login'
+import blogService from '../services/blogs'
+import userService from '../services/users'
+import { setNotification } from './notificationReducer'
 
-const userReducer = (state = null, action) => {
+const initialState = {
+  usersList: [],
+  currentUser: null,
+}
+
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_USER":
-      return action.payload;
+    case 'SET_USER':
+      return { ...state, currentUser: action.payload }
+    case 'GET_ALL_USERS':
+      return { ...state, usersList: action.payload }
     default:
-      return state;
+      return state
   }
-};
+}
 
 export const setExistingUser = () => {
-  const blogAppUser = window.localStorage.getItem("blogAppUser");
+  const blogAppUser = window.localStorage.getItem('blogAppUser')
+  let user = null
 
   if (blogAppUser) {
-    const user = JSON.parse(blogAppUser);
-    blogService.setToken(user.token);
-
-    return {
-      type: "SET_USER",
-      payload: user,
-    };
+    user = JSON.parse(blogAppUser)
+    blogService.setToken(user.token)
   }
-};
+
+  return {
+    type: 'SET_USER',
+    payload: user,
+  }
+}
 
 export const setUser = (credentials) => {
   return async (dispatch) => {
     try {
-      const user = await loginService.login(credentials);
+      const user = await loginService.login(credentials)
       dispatch({
-        type: "SET_USER",
+        type: 'SET_USER',
         payload: user,
-      });
+      })
 
-      blogService.setToken(user.token);
-      window.localStorage.setItem("blogAppUser", JSON.stringify(user));
-      dispatch(setNotification(`${user.name} logged in`, 5));
+      blogService.setToken(user.token)
+      window.localStorage.setItem('blogAppUser', JSON.stringify(user))
+      dispatch(setNotification(`${user.name} logged in`, 5))
     } catch (err) {
-      console.log(err.response);
-      dispatch(setNotification("wrong username or password", 5, "error"));
+      console.log(err.response)
+      dispatch(setNotification('Wrong username or password', 5, 'error'))
     }
-  };
-};
+  }
+}
 
 export const removeUser = () => {
-  window.localStorage.removeItem("blogAppUser");
+  window.localStorage.removeItem('blogAppUser')
   return {
-    type: "SET_USER",
+    type: 'SET_USER',
     payload: null,
-  };
-};
+  }
+}
 
-export default userReducer;
+export const getAllUsers = () => {
+  return async (dispatch) => {
+    const users = await userService.getAll()
+    dispatch({
+      type: 'GET_ALL_USERS',
+      payload: users,
+    })
+  }
+}
+
+export default userReducer

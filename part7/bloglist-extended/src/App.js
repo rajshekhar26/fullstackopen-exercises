@@ -1,67 +1,88 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Redirect, Route, Switch } from 'react-router-dom'
 
-import Blog from "./components/Blog";
-import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
-import BlogForm from "./components/BlogForm";
-import LoginForm from "./components/LoginForm";
-import { setExistingUser, removeUser } from "./reducers/userReducer";
-import { getAllBlogs } from "./reducers/blogsReducer";
+import UsersPage from './pages/Users'
+import UserPage from './pages/User'
+import BlogPage from './pages/Blog'
+import Blog from './components/Blog'
+import Notification from './components/Notification'
+import Navigation from './components/Navigation'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import { setExistingUser } from './reducers/userReducer'
+import { getAllBlogs } from './reducers/blogsReducer'
+import styled from 'styled-components'
 
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
-  const blogs = useSelector(({ blogs }) => blogs);
-  const user = useSelector(({ user }) => user);
-
-  useEffect(() => {
-    dispatch(getAllBlogs());
-  }, []);
+  const blogs = useSelector(({ blogs }) => blogs)
+  const currentUser = useSelector(({ user }) => user.currentUser)
 
   useEffect(() => {
-    dispatch(setExistingUser());
-  }, []);
+    dispatch(getAllBlogs())
+  }, [])
 
-  const handleLogout = () => {
-    dispatch(removeUser());
-  };
+  useEffect(() => {
+    dispatch(setExistingUser())
+  }, [])
 
-  const sortedBlog = blogs.sort((a, b) => b.likes - a.likes);
-
-  if (user === null) {
-    return (
-      <div>
-        <h2>log in to application</h2>
-        <Notification />
-        <Togglable buttonLabel="log in">
-          <LoginForm />
-        </Togglable>
-      </div>
-    );
-  }
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
+      <Navigation />
+      <Main>
+        <Notification />
 
-      <p>
-        {user.name} logged in
-        <button className="btn-logout" onClick={handleLogout}>
-          log out
-        </button>
-      </p>
+        <Switch>
+          <Route path='/users/:userId' exact>
+            <UserPage />
+          </Route>
 
-      <Togglable buttonLabel="create new blog">
-        <BlogForm />
-      </Togglable>
+          <Route path='/users' exact>
+            <UsersPage />
+          </Route>
 
-      {sortedBlog.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+          <Route path='/blogs/:blogId' exact>
+            {currentUser ? <BlogPage /> : <Redirect to='/login' />}
+          </Route>
+
+          <Route path='/' exact>
+            {currentUser ? (
+              <>
+                <Togglable buttonLabel='New Blog'>
+                  <BlogForm />
+                </Togglable>
+
+                {sortedBlogs.map((blog) => (
+                  <Blog key={blog.id} blog={blog} />
+                ))}
+              </>
+            ) : (
+              <Redirect to='/login' />
+            )}
+          </Route>
+
+          <Route path='/login' exact>
+            {!currentUser ? (
+              <Togglable buttonLabel='Log In'>
+                <LoginForm />
+              </Togglable>
+            ) : (
+              <Redirect to='/' />
+            )}
+          </Route>
+        </Switch>
+      </Main>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+const Main = styled.main`
+  margin-top: 7em;
+`
+
+export default App

@@ -6,9 +6,7 @@ import BlogForm from './BlogForm'
 describe('<BlogForm />', () => {
   test('calls handler with right details when blog is created', () => {
     const mockHandler = jest.fn()
-    const component = render(
-      <BlogForm handleCreateBlog={mockHandler} />
-    )
+    const component = render(<BlogForm handleCreateBlog={mockHandler} />)
 
     const title = component.container.querySelector('#title')
     const author = component.container.querySelector('#author')
@@ -16,15 +14,15 @@ describe('<BlogForm />', () => {
     const form = component.container.querySelector('form')
 
     fireEvent.change(title, {
-      target: { value: 'Test blog' }
+      target: { value: 'Test blog' },
     })
 
     fireEvent.change(author, {
-      target: { value: 'Raj Shekhar' }
+      target: { value: 'Raj Shekhar' },
     })
 
     fireEvent.change(url, {
-      target: { value: 'https://example.com' }
+      target: { value: 'https://example.com' },
     })
 
     fireEvent.submit(form)

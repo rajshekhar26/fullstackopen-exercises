@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import styled from 'styled-components'
+
+import { Button } from '../GlobalStyle'
 
 const Togglable = (props) => {
   const [visible, setVisible] = useState(false)
@@ -11,14 +14,30 @@ const Togglable = (props) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button className='btn-toggle-children' onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <TogglableButton
+          primary
+          className='btn-toggle-children'
+          onClick={toggleVisibility}
+        >
+          {props.buttonLabel}
+        </TogglableButton>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button className='btn-cancel' onClick={toggleVisibility}>cancel</button>
+        <TogglableButton
+          primary
+          className='btn-cancel'
+          onClick={toggleVisibility}
+        >
+          Cancel
+        </TogglableButton>
       </div>
     </div>
   )
 }
+
+const TogglableButton = styled(Button)`
+  margin-top: 0.4em;
+`
 
 export default Togglable

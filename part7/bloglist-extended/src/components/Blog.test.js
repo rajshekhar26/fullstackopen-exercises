@@ -11,13 +11,13 @@ describe('<Blog />', () => {
     likes: 12,
     user: {
       username: 'test',
-      name: 'Test'
-    }
+      name: 'Test',
+    },
   }
 
   const user = {
     username: 'test',
-    password: 'test'
+    password: 'test',
   }
 
   test('renders title and author', () => {
